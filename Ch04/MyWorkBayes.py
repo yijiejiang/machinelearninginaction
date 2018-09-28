@@ -1,5 +1,8 @@
 from numpy import *
 
+'''
+准备数据阶段
+'''
 def loadDataSet():      # 创建实验样本
     postingList=[['my', 'dog', 'has', 'flea', 'problems', 'help', 'please'],
                  ['maybe', 'not', 'take', 'him', 'to', 'dog', 'park', 'stupid'],
@@ -25,7 +28,24 @@ def setOfWords2Vec(vocabList, inputSet):
             print("the word: %s is not in my Vocabulary!" % word)
     return returnVec
 
-list0posts, listClasses = loadDataSet()
-myVocabList = createVocabList(list0posts)
+# list0posts, listClasses = loadDataSet()
+# myVocabList = createVocabList(list0posts)
 # print(myVocabList)
-print(setOfWords2Vec(myVocabList, list0posts[3]))
+# print(setOfWords2Vec(myVocabList, list0posts[3]))
+
+def trainNB0(trainMatrix, trainCategory):
+    numTrainDocs = len(trainMatrix)
+    numWords = len(trainMatrix[0])
+    pAbusive = sum(trainCategory)/float(numTrainDocs)
+    p0Num = ones(numWords); p1Num = ones(numWords)      #change to ones()
+    p0Denom = 2.0; p1Denom = 2.0                        #change to 2.0
+    for i in range(numTrainDocs):
+        if trainCategory[i] == 1:
+            p1Num += trainMatrix[i]
+            p1Denom += sum(trainMatrix[i])
+        else:
+            p0Num += trainMatrix[i]
+            p0Denom += sum(trainMatrix[i])
+    p1Vect = log(p1Num/p1Denom)          #change to log()
+    p0Vect = log(p0Num/p0Denom)          #change to log()
+    return p0Vect, p1Vect, pAbusive
